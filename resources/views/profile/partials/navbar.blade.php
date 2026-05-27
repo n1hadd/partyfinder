@@ -1,74 +1,84 @@
-<nav class="navbar navbar-expand-lg navbar-dark py-3">
+<nav class="navbar">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url('/') }}">
-            <span class="pf-brand fs-4">PartyFinder</span>
-        </a>
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 2rem;">
+            
+            <!-- Logo -->
+            <a class="navbar-brand" href="{{ route('dashboard') }}">
+                PartyFinder
+            </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#pfNav"
-                aria-controls="pfNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <!-- Search Bar (Desktop) -->
+            <div style="flex: 1; max-width: 400px; display: none;" class="d-lg-block">
+                <form role="search" style="width: 100%;">
+                    <input 
+                        type="search" 
+                        class="nav-search" 
+                        placeholder="Iskanje zabav, koncertov, festivalov..."
+                        aria-label="Iskanje"
+                    >
+                </form>
+            </div>
 
-        <div id="pfNav" class="collapse navbar-collapse">
-            <form class="d-flex ms-lg-4 my-3 my-lg-0 flex-grow-1" role="search">
-                <div class="input-group pf-glass-2 overflow-hidden">
-                    <span class="input-group-text bg-transparent border-0 text-white-50">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input class="form-control border-0 bg-transparent text-white pf-input"
-                           type="search"
-                           placeholder="Search parties, concerts, festivals..."
-                           aria-label="Search">
-                </div>
-            </form>
-
-            <ul class="navbar-nav ms-lg-3 align-items-lg-center gap-2">
+            <!-- Right Side: Auth Buttons & Menu -->
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
                 @guest
-                    @if (Route::has('login'))
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light rounded-pill px-3" href="{{ route('login') }}">
-                                Log in
-                            </a>
-                        </li>
-                    @endif
-
-                    @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="btn pf-btn-gradient rounded-pill px-3" href="{{ route('register') }}">
-                                Register
-                            </a>
-                        </li>
-                    @endif
-                @else
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="pf-chip">
-                                <i class="bi bi-person-circle me-1"></i>{{ Auth::user()->name }}
-                            </span>
-                        </a>
-
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('parties.index') }}">
-                                    <i class="bi bi-grid me-2"></i>Browse Parties
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-
-                            {{-- Breeze logout --}}
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button class="dropdown-item" type="submit">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
+                    <a href="{{ route('login') }}" class="btn-nav btn-nav-secondary">
+                        Prijava
+                    </a>
+                    <a href="{{ route('register') }}" class="btn-nav btn-nav-primary">
+                        Registracija
+                    </a>
                 @endguest
-            </ul>
+
+                @auth
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <button class="btn-icon" title="Profil">
+                            <i class="bi bi-person-circle"></i>
+                        </button>
+                        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                            @csrf
+                            <button type="submit" class="btn-icon" title="Odjava">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </button>
+                        </form>
+                    </div>
+                @endauth
+
+                <!-- Mobile Menu Toggle -->
+                <button class="btn-icon d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#navMenu" aria-controls="navMenu">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Mobile Search -->
+        <div style="display: none;" class="d-lg-none" style="margin-top: 1rem;">
+            <input 
+                type="search" 
+                class="nav-search" 
+                style="width: 100%; max-width: 100%;"
+                placeholder="Iskanje..."
+            >
+        </div>
+    </div>
+
+    <!-- Mobile Menu Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="navMenu" style="background: var(--bg-secondary); border-left: 1px solid var(--border-color);">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" style="color: var(--text-primary); font-weight: 700;">Meni</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a href="#" style="color: var(--text-secondary); text-decoration: none; font-weight: 500;">Iskanje zabav</a>
+                <a href="#" style="color: var(--text-secondary); text-decoration: none; font-weight: 500;">Moje rezervacije</a>
+                <a href="#" style="color: var(--text-secondary); text-decoration: none; font-weight: 500;">Ustvari dogodek</a>
+                <hr style="background: var(--border-color);">
+                @auth
+                    <a href="#" style="color: var(--text-secondary); text-decoration: none; font-weight: 500;">Nastavitve profila</a>
+                @endauth
+            </div>
         </div>
     </div>
 </nav>
